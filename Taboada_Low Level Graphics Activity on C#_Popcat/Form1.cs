@@ -11,6 +11,7 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
         int score, playerSpeed, ghostSpeed;
         Random rnd = new Random();
 
+        //Initial State
         public Form1()
         {
             InitializeComponent();
@@ -19,6 +20,7 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
             resetGame();
         }
 
+        //Start State
         private void resetGame()
         {
             goup = godown = goleft = goright = false;
@@ -27,10 +29,9 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
             ghostSpeed = 3;
             isGameOver = false;
 
-            popCat.Image = Properties.Resources.right;  // Set initial popcat image
+            popCat.Image = Properties.Resources.right;  
             popCat.Location = new Point(8, 36);
-
-            // Set initial ghost positions and images
+          
             SetGhostPosition(ghostOne, 265, 410, "up");
             SetGhostPosition(ghostTwo, 6, 200, "left");
             SetGhostPosition(ghostThree, 565, 134, "down");
@@ -39,8 +40,8 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
             {
                 if (x is PictureBox && (string)x.Tag == "nibs")
                 {
-                    x.Visible = true;   // Make all nibs visible
-                    x.Enabled = true;   // Mark all nibs as "uneaten"
+                    x.Visible = true;   
+                    x.Enabled = true;  
                 }
             }
 
@@ -55,10 +56,11 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
         private void SetGhostPosition(PictureBox ghost, int x, int y, string direction)
         {
             ghost.Location = new Point(x, y);
-            ghost.Tag = direction;  // Store current direction
-            UpdateGhostImage(ghost, direction);  // Set initial ghost image
+            ghost.Tag = direction; 
+            UpdateGhostImage(ghost, direction);  
         }
 
+        //Running State
         private void keyisdown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up) goup = true;
@@ -81,7 +83,6 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
         {
             txtScore.Text = "Score: " + score;
 
-            // Handle Popcat Movement with Boundary Check wowzers
             if (goleft && popCat.Left > 0)
             {
                 popCat.Left -= playerSpeed;
@@ -103,7 +104,7 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
                 popCat.Image = Properties.Resources.upRight;
             }
 
-            // Collision Handling
+            //Eating 
             foreach (Control x in this.Controls)
             {
                 if (x is PictureBox && (string)x.Tag == "nibs" && x.Visible)
@@ -111,11 +112,11 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
                     if (popCat.Bounds.IntersectsWith(x.Bounds))
                     {
                         score++;
-                        x.Visible = false;  // Hide the nib permanently when eaten
+                        x.Visible = false; 
                         x.Enabled = false;  
                     }
                 }
-
+                //Collisions
                 if (x is PictureBox && (string)x.Tag == "wall" && popCat.Bounds.IntersectsWith(x.Bounds))
                 {
                     gameOver("You Lose!");
@@ -160,17 +161,17 @@ namespace Taboada_Low_Level_Graphics_Activity_on_C__Popcat
 
         private void HandleGhostNibsInteraction()
         {
-            // Check each nib to see if a ghost overlaps with it
             foreach (Control nib in this.Controls.OfType<PictureBox>().Where(p => (string)p.Tag == "nibs" && p.Enabled))
             {
                 bool isAnyGhostOverlapping = ghostOne.Bounds.IntersectsWith(nib.Bounds) ||
                                              ghostTwo.Bounds.IntersectsWith(nib.Bounds) ||
                                              ghostThree.Bounds.IntersectsWith(nib.Bounds);
 
-                nib.Visible = !isAnyGhostOverlapping;  // Hide nib only temporarily when ghosts overlap
+                nib.Visible = !isAnyGhostOverlapping; 
             }
         }
 
+        //Automatic Ghost Movement
         private void MoveGhost(PictureBox ghost)
         {
             Point originalPosition = ghost.Location;
